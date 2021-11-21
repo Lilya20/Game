@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -13,6 +12,7 @@ public class Player : MonoBehaviour
      private int curHp; //количество жизней
      private int maxHp =3; //максимальное кол-во жизней
      private bool isHit = false; //ударяет ли кто-то наш объект
+     private bool isJump = false; //запрос на прыжок для физики
      public Main main;
      
     // Start is called before the first frame update
@@ -33,23 +33,28 @@ public class Player : MonoBehaviour
         if (Input.GetAxis("Horizontal") == 0 && (isGrounded)) //если ч стоит и на земле
         {
             anim.SetInteger("State", 1);
-        }
-        else
-        {
+        } else {
             Flip();
-        if (isGrounded) //если герой на какой-то поверхности
+            if (isGrounded) //если герой на какой-то поверхности
+            {
+                anim.SetInteger("State", 2);
+            }
+        }
+        if (Input.GetKeyDown(KeyCode.Space)) 
         {
-            anim.SetInteger("State", 2);
+            isJump = true;
         }
     }
-}
 
     private void FixedUpdate() //метод физического движка (не зависит от частоты кадров)
     //здесь мы прописываем движение объекта по горизонтали
     {
         rb.velocity = new Vector2(Input.GetAxis("Horizontal") * speed, rb.velocity.y); //задаем скорость
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
-            rb.AddForce(transform.up*jumpHeight, ForceMode2D.Impulse); //прыжок
+        if (isJump && isGrounded) 
+        {
+            isJump = false;
+            rb.AddForce(transform.up * jumpHeight, ForceMode2D.Impulse); //прыжок
+        }
     }
 
     private void Flip()//если объект идет влево, то он поворачивается на 180 градусов
@@ -118,8 +123,5 @@ public class Player : MonoBehaviour
     {
         main.GetComponent<Main>().Lose();
     }
-    
-    
 }
-
 

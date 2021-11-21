@@ -37,6 +37,13 @@ public class airPatrol : MonoBehaviour
     IEnumerator Waiting() //создание карутины
     {
         yield return new WaitForSeconds(waitTime);
+        if(transform.rotation.y == 0) 
+            transform.eulerAngles = new Vector3(0, transform.rotation.y + 180, 0); //меняем направление, когда доходим до одной из точек
+        else
+        {
+            transform.eulerAngles = new Vector3(0, 0, 0);
+        }
+        
         CanGo = true;
     } 
     
